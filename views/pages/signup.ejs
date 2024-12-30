@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../components/header.ejs'); %>
+  </head>
+  <body class="container">
+    <div class="app-container">
+      <form method="post" action="/signup">
+        <div class="card" style="width: 18rem">
+          <div class="card-body">
+            <h3 class="card-title mb-2">SignUp</h3>
+            <h6 class="mb-3 text-secondary">Create account</h6>
+            <div class="mb-3">
+              <label for="userName" class="form-label">User Name</label>
+              <input
+                name="userName"
+                type="text"
+                class="form-control"
+                id="userName"
+                placeholder="user name"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input
+                name="email"
+                type="email"
+                class="form-control"
+                id="email"
+                placeholder="name@example.com"
+              />
+            </div>
+            <div class="mb-4">
+              <label for="password" class="form-label">Password</label>
+              <input
+                name="password"
+                type="password"
+                class="form-control"
+                id="password"
+                placeholder="............"
+              />
+            </div>
+            <div class="d-grid">
+              <button class="btn btn-danger" type="submit">sign up</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <footer><%- include('../components/footer.ejs'); %></footer>
+  </body>
+</html>

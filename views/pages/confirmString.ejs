@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../components/header.ejs'); %>
+  </head>
+  <body class="container">
+    <div class="app-container">
+      <form action="/checkRandomString" method="post">
+        <div class="card" style="width: 30rem">
+          <div class="card-body">
+            <h3 class="card-title mb-4">OTP Verification</h3>
+
+            <div class="mb-4">
+              <label for="randomString" class="form-label"
+                >One Time Password</label
+              >
+              <input
+                name="randomString"
+                type="text"
+                class="form-control"
+                id="randomString"
+                placeholder="string"
+              />
+            </div>
+
+            <div class="d-grid">
+              <button class="btn btn-success" type="submit">verify</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <footer><%- include('../components/footer.ejs'); %></footer>
+  </body>
+</html>
