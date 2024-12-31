@@ -5,14 +5,10 @@
   </head>
   <body>
     <%- include('../components/navbar.ejs'); %>
-    <div class="app-container">
-      <div class="card" style="width: 30rem">
-        <div class="card-body">
-          <h2 class="card-title" style="text-align: center">
-            Logged in successfully !!!
-          </h2>
-        </div>
-      </div>
+
+    <div class="row">
+      <% data.forEach(function(_d){ %> <%- include('../components/note.ejs',
+      {note: _d}); %> <% }); %>
     </div>
 
     <footer><%- include('../components/footer.ejs'); %></footer>

@@ -2,8 +2,13 @@ const express = require("express");
 const { createDbConnection } = require("./db");
 const UserModel = require("./model/User.model");
 const NoteModel = require("./model/notes.model");
-const { fetchAllNotes } = require("./controllers/notes.controller");
+const {
+  fetchAllNotes,
+  fetchNoteId,
+} = require("./controllers/notes.controller");
 const server = express();
+
+require("dotenv").config();
 
 server.use(express.static("public"));
 
@@ -44,11 +49,28 @@ server.get("/resetPassword", function (req, res) {
   res.render("pages/resetPassword");
 });
 
+// note details page
+server.get("/note/:noteId", async function (req, res) {
+  const { noteId } = req.params;
+  try {
+    const note = await fetchNoteId(noteId);
+    res.render("pages/notedetails", {
+      note,
+    });
+  } catch (error) {
+    res.render("pages/error", {
+      error: error.message,
+    });
+  }
+});
+
 // dashboard page
-server.get("/dashBoard", async function (req, res) {
-  const result = await fetchAllNotes();
-  console.log("notes", result);
-  res.render("pages/dashboard");
+server.get("/dashboard", async function (req, res) {
+  const notes = await fetchAllNotes();
+  console.log("notes", notes);
+  res.render("pages/dashboard", {
+    data: notes,
+  });
 });
 
 // creates note page
@@ -61,7 +83,7 @@ server.post("/login", (req, res) => {
   console.log("req.body", req.body);
   const { email, password } = req.body;
   if (email && password) {
-    return res.redirect(`${req.headers["origin"]}/dashBoard`);
+    return res.redirect(`${req.headers["origin"]}/dashboard`);
   } else {
     res.render("pages/error", {
       error: "Bad credentials!!!",
@@ -146,7 +168,7 @@ server.post("/savenote", async (req, res) => {
 // });
 
 // local server
-server.listen(3000, "localhost", () => {
+server.listen(`process.env.${LOCALHOST}`, `process.env.${HOST}`, () => {
   console.log("server started !!!");
   createDbConnection();
 });

@@ -22,3 +22,26 @@ body {
   justify-content: center;
   height: 100%;
 }
+
+.notes {
+  min-width: 150px;
+  height: 200px;
+  margin-top: 20px;
+  background-image: url("../images/note.jpg");
+  background-position: center;
+  background-size: cover;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    transform: scale(0.8);
+    animation: transform 1s ease-out;
+  }
+}
+
+.row {
+  margin-left: 20px;
+  margin-right: 20px;
+}

@@ -4,4 +4,8 @@ async function fetchAllNotes() {
   return NoteModel.find();
 }
 
-module.exports = { fetchAllNotes };
+async function fetchNoteId(noteId) {
+  return NoteModel.findOne({ _id: noteId });
+}
+
+module.exports = { fetchAllNotes, fetchNoteId };

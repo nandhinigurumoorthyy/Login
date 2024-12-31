@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
-const mongoDBURI = "mongodb://localhost:27017/fsd2";
+const mongoDBURI =
+  process.env.NODE_ENV === "development"
+    ? "mongodb://localhost:27017/fsd2"
+    : `mongodb+srv://${process.env.DB_USER_NAME}:${process.env.DB_USER_PASSWORD}@notesapplication.jzygn.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority&appName=notesApplication`;
 
 async function createDbConnection() {
   try {
