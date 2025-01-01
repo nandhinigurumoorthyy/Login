@@ -1,15 +1,19 @@
 const express = require("express");
-const { createDbConnection } = require("./db");
+const cookieParser = require("cookie-parser");
+
 const UserModel = require("./model/User.model");
 const NoteModel = require("./model/notes.model");
 const {
   fetchAllNotes,
   fetchNoteId,
 } = require("./controllers/notes.controller");
+const { cookieGuard } = require("./middleware/cookieMiddleware");
 const server = express();
 
-require("dotenv").config();
+server.use(cookieParser());
 
+require("dotenv").config();
+const { createDbConnection } = require("./db");
 server.use(express.static("public"));
 
 server.use(express.urlencoded({ extended: true }));
@@ -50,7 +54,7 @@ server.get("/resetPassword", function (req, res) {
 });
 
 // note details page
-server.get("/note/:noteId", async function (req, res) {
+server.get("/note/:noteId", cookieGuard, async function (req, res) {
   const { noteId } = req.params;
   try {
     const note = await fetchNoteId(noteId);
@@ -65,12 +69,18 @@ server.get("/note/:noteId", async function (req, res) {
 });
 
 // dashboard page
-server.get("/dashboard", async function (req, res) {
-  const notes = await fetchAllNotes();
-  console.log("notes", notes);
-  res.render("pages/dashboard", {
-    data: notes,
-  });
+server.get("/dashboard", cookieGuard, async function (req, res) {
+  try {
+    const notes = await fetchAllNotes();
+    console.log("notes", notes);
+    res.render("pages/dashboard", {
+      data: notes,
+    });
+  } catch (error) {
+    res.render("pages/error", {
+      error: error.message,
+    });
+  }
 });
 
 // creates note page
@@ -79,14 +89,22 @@ server.get("/createnotes", function (req, res) {
 });
 
 // handle Login
-server.post("/login", (req, res) => {
-  console.log("req.body", req.body);
+server.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  if (email && password) {
-    return res.redirect(`${req.headers["origin"]}/dashboard`);
-  } else {
+  console.log("req.body", req.body);
+  try {
+    const matchUser = await UserModel.findOne({ email });
+    if (matchUser.password === password) {
+      res.cookie("auth", { email });
+      return res.redirect(`${req.headers["origin"]}/dashboard`);
+    } else {
+      res.render("pages/error", {
+        error: "Bad credentials!!!",
+      });
+    }
+  } catch (error) {
     res.render("pages/error", {
-      error: "Bad credentials!!!",
+      error: error.message,
     });
   }
 });
@@ -168,7 +186,7 @@ server.post("/savenote", async (req, res) => {
 // });
 
 // local server
-server.listen(`process.env.${LOCALHOST}`, `process.env.${HOST}`, () => {
+server.listen(`${process.env.PORT}`, `${process.env.LOCALHOST}`, () => {
   console.log("server started !!!");
   createDbConnection();
 });
